@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Arma - Compra - LocalStorage</title>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.8/vue.js"></script>      
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" />
+        <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+        <script src="Vue.js"></script>
+        <link rel="stylesheet" href="estilizacao.css"/>
+        
+
+
+    </head> 
+    <body> 
+       
+        <div class="container-fluid">
+            <h2>Compra e personalização de armas:</h2>
+               <div class="row">
+             <div class="col-xs-3">
+               <ul class="nav nav-pills nav-stacked">
+                 <li class="active"><a data-toggle="pill" href="#home">Bem Vindo</a></li>
+                 <li><a data-toggle="pill" href="#menu1">Armas</a></li>
+                 <li><a data-toggle="pill" href="#menu2">Compra</a></li>
+               </ul>
+             </div>
+             <div class="col-xs-9">
+               <div class="tab-content" id="app">
+                 <div id="home" class="tab-pane fade in active">
+                   <h3>Faça aqui sua personalização e compra de armas</h3>
+                 </div>
+                 <div id="menu1" class="tab-pane fade">
+                  
+                    <h2>Listagem de Armas</h2>   
+
+                    <table class="table table-striped" >
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Nome</th>
+                            <th scope="col">Valor</th>
+                            <th scope="col">Data de Criação</th>
+                            <th scope="col">Dano</th>
+                            <th scope="col">Recarga</th>
+                            <th scope="col">Max de Compra</th>
+
+                            <th scope="col">Alterar</th>
+                            <th scope="col">Remover</th>
+                        </tr>                     
+                        <tbody>
+                            <tr v-for="(e, indice) in armas">                                                
+                                    <td>{{e.id}}</td>
+                                    <td>{{e.nome}}</td>
+                                    <td>{{e.valor}}</td>
+                                    <td>{{e.dtcriacao | formataData}}</td>
+                                    <td>{{e.dano}}</td>
+                                    <td>{{e.recarga}}</td>
+                                    <td>{{e.maxcompra}}</td>
+
+                                    <td><button v-on:click="editArma(indice)" class="btn" type="button">Alterar</button></td>
+                                    <td><button v-on:click="remArma(indice)" class="btn" type="button">Remover</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+  
+                    <form id="formulario">     
+                        <h3>Formulário para cadastrar Armas</h3>                   
+                        <div>
+                          <div class="form-group">
+                            <label for="inputId">#:</label>
+                            <input type="text" v-model="nova_arma.id" class="form-control" id="inputId" disabled>
+                          </div>
+                          <div class="form-group">
+                              <label for="inputNome">Nome da Arma:</label>
+                              <input type="text" v-model="nova_arma.nome" class="form-control" id="inputNome">
+                          </div>
+                          <div class="form-group">
+                              <label for="inputValor">Valor:</label>
+                              <input type="text" v-model="nova_arma.valor" class="form-control" id="inputValor">
+                          </div>   
+                          <div class="form-group">
+                            <label for="inputDataCriacao">Data de Criação:</label>
+                            <input type="date" v-model="nova_arma.dtcriacao" class="form-control" id="inputDataCriacao">
+                        </div>  
+                        <div class="form-group">
+                            <label for="inputDano">Nível de Dano:</label>
+                            <input type="text" v-model="nova_arma.dano" class="form-control" id="inputDano">
+                        </div>    
+                        
+                        <div class="form-group">
+                            <label for="inputRecarga">Velocidade de Recarga:</label>
+                            <input type="text" v-model="nova_arma.recarga" class="form-control" id="inputRecarga">
+                        </div>    
+                        
+                        <div class="form-group">
+                            <label for="inputMaxCompra">Quantidade Max de Compra:</label>
+                            <input type="text" v-model="nova_arma.maxcompra" class="form-control" id="inputMaxCompra">
+                        </div>    
+                            
+                          <button @click="addArma" class="btn btn-primary" type="button">Salvar</button>
+                          <button @click="cleanFormularioArma" class="btn btn-primary" type="button">Limpar</button>                         
+                        </div>                                                                            
+                    </form> 
+
+                 </div>
+
+
+
+
+                 <div id="menu2" class="tab-pane fade">
+
+                    <h2>Listagem de Armas do CS</h2>   
+
+                    <table class="table table-striped" >
+                        <tr>
+                            <th scope="col">Arma</th>
+                            <th scope="col">Observação</th>
+                            <th scope="col">Quantidade</th>
+                            <th scope="col">Valor Total</th>
+                            <th scope="col">Data</th>
+                            <th scope="col">Alterar</th>
+                            <th scope="col">Remover</th>
+                        </tr>                     
+                        <tbody>
+                            <tr v-for="(j, indice) in compras"> 
+                                    <td>{{j.arma.nome}}</td>               
+                                    <td>{{j.observacao}}</td>
+                                    <td>{{j.quantidade}}</td>
+                                    <td>{{j.valortotal}}</td>
+                                    <td>{{j.data | formataData}}</td>
+
+                                    <td><button v-on:click="editCompra(indice)" class="btn" type="button">Alterar</button></td>
+                                    <td><button v-on:click="remCompra(indice)" class="btn" type="button">Remover</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <form id="formulario">                        
+                      <h3>Formulário para cadastrar uma nova Compra</h3>
+                         
+                        <div class="form-group">
+                            <label for="selectArma"><a href="Vue_crud_select_localstorage_arma.html">Arma:</a></label>
+                            <select v-model="nova_compra.arma" class="form-control" id="selectArma">
+                                <option disabled value="">Escolha um item</option>
+                                <option v-for="e in armas" v-bind:value="e">
+                                     {{ e.nome }}
+                                </option>
+                            </select>
+                        </div>
+                          <div class="form-group">
+                              <label for="inputObservacao">Observação:</label>
+                              <input type="text" v-model="nova_compra.observacao" class="form-control" id="inputObservacao">
+                          </div>
+                          <div class="form-group">
+                            <label for="inputQuantidade">Quantidade:</label>
+                            <input type="text" v-model="nova_compra.quantidade" class="form-control" id="inputQuantidade">
+                        </div>
+                          <div class="form-group">
+                              <label for="inputValorTotal">Valor Total:</label>
+                              <input type="number" v-model="nova_compra.valortotal" class="form-control" id="inputValorTotal">
+                          </div>
+                          <div class="form-group">
+                              <label for="inputData">Data:</label>
+                              <input type="date" v-model="nova_compra.data" class="form-control" id="inputData">
+                          </div>
+                          
+                          <button @click="addCompra" class="btn btn-primary" type="button">Salvar</button>
+                          <button @click="cleanFormularioCompra" class="btn btn-primary" type="button">Limpar</button>
+                                                                                                      
+                    </form>  
+
+                  </div>
+
+               </div>
+             </div>
+           </div>
+         </div>
+
+    </body>
+
+
+
+
+</html>
